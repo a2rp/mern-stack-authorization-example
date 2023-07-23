@@ -1,0 +1,61 @@
+.container {
+    padding: 15px;
+
+    .form {
+        padding: 15px;
+        width: 250px;
+
+        .title {
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        .formGroup {
+            margin-bottom: 15px;
+
+            label {
+                display: block;
+            }
+            input {
+                padding-left: 15px;
+                width: 250px;
+                height: 30px;
+            }
+        }
+
+        .errorInfoRegisterButtonContainer {
+            margin-bottom: 15px;
+            width: 250px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            button[type="submit"] {
+                border: none;
+                width: 100px;
+                height: 30px;
+                border-radius: 3px;
+                background-color: #eee;
+
+                &:hover {
+                    background-color: #aaa;
+                }
+            }
+
+            .errorInfoContainer {
+                width: 100%;
+
+                .errorMessage {
+                    font-size: 10px;
+                    color: #f00;
+                }
+            }
+        }
+
+        .loginRegisterContainer {
+            width: 250px;
+            display: flex;
+            justify-content: space-between;
+        }
+    }
+}
