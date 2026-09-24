@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/mern-stack-authorization-example/static/css/main.8fc4788f.css",
+    "main.js": "/mern-stack-authorization-example/static/js/main.11d2bf94.js",
+    "static/js/787.987b3ee2.chunk.js": "/mern-stack-authorization-example/static/js/787.987b3ee2.chunk.js",
+    "index.html": "/mern-stack-authorization-example/index.html",
+    "main.8fc4788f.css.map": "/mern-stack-authorization-example/static/css/main.8fc4788f.css.map",
+    "main.11d2bf94.js.map": "/mern-stack-authorization-example/static/js/main.11d2bf94.js.map",
+    "787.987b3ee2.chunk.js.map": "/mern-stack-authorization-example/static/js/787.987b3ee2.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.8fc4788f.css",
+    "static/js/main.11d2bf94.js"
+  ]
+}
