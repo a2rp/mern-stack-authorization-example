@@ -1,62 +1,56 @@
 import { useState } from "react";
 import axios from "axios";
-import styles from "./ForgotPasswordPage.module.scss";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+import { FiArrowLeft, FiCheckCircle, FiKey, FiMail, FiSend } from "react-icons/fi";
+import AppShell from "../layout/AppShell";
+import { API_BASE_URL } from "../../constants";
+import styles from "./auth.module.scss";
 
 const ForgotPasswordPage = () => {
-    const navigate = useNavigate();
-
     const [email, setEmail] = useState("");
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const forgotPasswordHandler = async (event) => {
         event.preventDefault();
-
-        const config = {
-            header: {
-                "Content-Type": "application/json",
-            },
-        };
-
+        setError("");
+        setSuccess("");
+        setLoading(true);
         try {
-            const { data } = await axios.post("http://localhost:1198/api/auth/forgotpassword", { email }, config);
+            const { data } = await axios.post(`${API_BASE_URL}/api/auth/forgotpassword`, { email }, { headers: { "Content-Type": "application/json" } });
             setSuccess(data.data);
-        } catch (error) {
-            setError(error.response.data.error);
-            setEmail("");
-            setTimeout(() => {
-                setError("");
-            }, 5000);
+        } catch (requestError) {
+            setError(requestError.response?.data?.error || "Unable to send the reset email right now.");
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-        <div className={styles.container}>
-            <form onSubmit={forgotPasswordHandler} className={styles.form}>
-                <h3 className={styles.title}>Forgot Password</h3>
-                <div className={styles.formGroup}>
-                    <p className={styles.info}>
-                        Please enter the email address you registered your account with. Reset password confirmation will be sent to this email.
-                    </p>
-                    <label htmlFor="email">Email:</label>
-                    <input type="email" required id="email" placeholder="Email address" value={email} onChange={(event) => setEmail(event.target.value)} />
-                </div>
-
-                <div className={styles.infoButtonContainer}>
-                    <div className={styles.infoContainer}>
-                        {error ? <span className={styles.errorMessage}>{error}</span> : null}
-                        {success ? <span className={styles.successMessage}>{success}</span> : null}
+        <AppShell>
+            <section className={styles.page}>
+                <div className={styles.grid}>
+                    <div className={styles.intro}>
+                        <span className={styles.eyebrow}><FiKey /> Account recovery</span>
+                        <h1 className={styles.heading}>A clear path back into your account.</h1>
+                        <p className={styles.lead}>Request a reset link from the existing API and choose a new password from the secure token route.</p>
+                        <ul className={styles.points}><li><FiCheckCircle /> Email-based reset request</li><li><FiCheckCircle /> Time-limited reset token</li><li><FiCheckCircle /> Simple recovery experience</li></ul>
                     </div>
-                    <button type="submit" className={`${styles.btn} ${styles.btnPrimary}`}>Send Email</button>
+                    <div className={styles.card}>
+                        <h2 className={styles.title}>Forgot password?</h2>
+                        <p className={styles.subtitle}>Enter the email connected to your account.</p>
+                        <form className={styles.form} onSubmit={forgotPasswordHandler}>
+                            <div className={styles.formGroup}><label htmlFor="email">Email address</label><div className={styles.inputWrap}><FiMail className={styles.inputIcon} /><input className={styles.input} type="email" required id="email" placeholder="you@example.com" value={email} onChange={(event) => setEmail(event.target.value)} /></div></div>
+                            <div className={`${styles.status} ${styles.error}`} role="alert">{error}</div>
+                            <div className={`${styles.status} ${styles.success}`} role="status">{success}</div>
+                            <button className={styles.button} type="submit" disabled={loading}><FiSend /> {loading ? "Sending..." : "Send reset email"}</button>
+                        </form>
+                        <div className={styles.links}><NavLink to="/login"><FiArrowLeft /> Back to login</NavLink><NavLink to="/register">Create account</NavLink></div>
+                    </div>
                 </div>
-
-                <div className={styles.loginRegisterContainer}>
-                    <NavLink to="/login">Login</NavLink>
-                    <NavLink to="/register">Register</NavLink>
-                </div>
-            </form>
-        </div>
+            </section>
+        </AppShell>
     );
 };
 

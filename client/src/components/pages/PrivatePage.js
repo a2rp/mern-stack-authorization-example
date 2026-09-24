@@ -1,59 +1,49 @@
-import React, { useEffect, useState } from 'react'
-import { NavLink, useNavigate } from 'react-router-dom';
-import styles from "./PrivatePage.module.scss";
-import axios from 'axios';
+import { useEffect, useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { FiCheckCircle, FiLogOut, FiShield, FiUser } from "react-icons/fi";
+import axios from "axios";
+import AppShell from "../layout/AppShell";
+import { API_BASE_URL } from "../../constants";
+import styles from "./auth.module.scss";
 
 const PrivatePage = () => {
     const navigate = useNavigate();
-
     const [error, setError] = useState("");
     const [privateData, setPrivateData] = useState("");
+
+    useEffect(() => {
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+            navigate("/login");
+            return;
+        }
+        const fetchPrivateData = async () => {
+            try {
+                const { data } = await axios.get(`${API_BASE_URL}/api/private`, { headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` } });
+                setPrivateData(data.data);
+            } catch (requestError) {
+                localStorage.removeItem("authToken");
+                setError(requestError.response?.data?.error || "You are not authorized to access this page. Please login.");
+            }
+        };
+        fetchPrivateData();
+    }, [navigate]);
 
     const logoutHandler = () => {
         localStorage.removeItem("authToken");
         navigate("/login");
     };
 
-    useEffect(() => {
-        if (!localStorage.getItem("authToken")) {
-            navigate("/login");
-        }
-
-        const fetchPrivateData = async () => {
-            const config = {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${localStorage.getItem("authToken")}`
-                }
-            };
-
-            try {
-                const { data } = await axios.get("http://localhost:1198/api/private", config);
-                setPrivateData(data.data);
-            } catch (error) {
-                localStorage.removeItem("authToken");
-                setError("You are not authorized to access this page. Please login.");
-            }
-        };
-
-        fetchPrivateData();
-    }, [navigate]);
-
     return (
-        <div className={styles.container}>
-            <h1 className={styles.title}>Profile Page</h1>
-            {error
-                ? <div className={styles.errorMessageLoginContainer}>
-                    <div className={styles.errorMessage}>{error}</div>
-                    <NavLink to="/login">Login</NavLink>
+        <AppShell>
+            <section className={styles.page}>
+                <div className={styles.privateCard}>
+                    <div className={styles.privateHeader}><div><span className={styles.eyebrow}><FiShield /> Protected area</span><h1 className={styles.title}>Your profile workspace</h1></div><FiUser size={30} color="#67c7ff" /></div>
+                    {error ? <div className={`${styles.status} ${styles.error}`} role="alert">{error} <NavLink to="/login">Login</NavLink></div> : <><div className={styles.privateData}><FiCheckCircle color="#71dfae" /> {privateData || "Loading protected data..."}</div><button className={styles.button} type="button" onClick={logoutHandler}><FiLogOut /> Log out</button></>}
                 </div>
-                : <div className={styles.dataLogoutContainer}>
-                    <div className={styles.privateData}>{privateData}</div>
-                    <button onClick={logoutHandler}>Logout</button>
-                </div>}
-        </div>
+            </section>
+        </AppShell>
     );
+};
 
-}
-
-export default PrivatePage
+export default PrivatePage;
