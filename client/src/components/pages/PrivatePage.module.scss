@@ -1,31 +1,61 @@
-.container {
-    // border: 1px solid #f00;
-    padding: 15px;
-    width: 250px;
+.page {
+    min-height: 50vh;
+    padding: 48px 24px;
+}
 
-    .title {
-        font-size: 20px;
-        margin-bottom: 15px;
-    }
+.privateCard {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 32px;
+    border: 1px solid rgba(103, 199, 255, 0.24);
+    border-radius: 20px;
+    background: rgba(9, 18, 30, 0.88);
+    color: #f5f8fc;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+}
 
-    .errorMessageLoginContainer {
-        border: 1px solid #f00;
-        width: 250px;
-        display: flex;
-        justify-content: space-between;
+.privateHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+}
 
-        .errorMessage {
-            color: #f00;
-        }
-    }
+.eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #67c7ff;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+}
 
-    .dataLogoutContainer {
-        width: 250px;
-        display: flex;
-        justify-content: space-between;
+.title {
+    margin: 12px 0 24px;
+    font-size: clamp(24px, 4vw, 36px);
+}
 
-        .privateData {
-            font-size: 10px;
-        }
-    }
+.privateData {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    overflow-wrap: anywhere;
+}
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 24px;
+    padding: 12px 18px;
+    border: 0;
+    border-radius: 9px;
+    background: #1689ce;
+    color: #fff;
+    cursor: pointer;
+    font: inherit;
 }

@@ -1,28 +1,35 @@
 const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
 const User = require("../models/User.model");
 const ErrorResponse = require("../utils/errorResponse.util");
 
 exports.protect = async (req, res, next) => {
-    let token;
-
-    if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
-        token = req.headers.authorization.split("Bearer ")[1];
+    const secret = process.env.JWT_SECRET;
+    if (typeof secret !== "string" || Buffer.byteLength(secret, "utf8") < 32) {
+        return next(new ErrorResponse("Authentication is not configured.", 503));
     }
+    const token = req.cookies?.token;
+    if (!token) return next(new ErrorResponse("Authentication required.", 401));
 
-    if (!token) {
-        return next(new ErrorResponse("Not authorized to access this route", 401));
+    let decoded;
+    try {
+        decoded = jwt.verify(token, secret, { algorithms: ["HS256"] });
+    } catch (_) {
+        return next(new ErrorResponse("Authentication required.", 401));
+    }
+    if (typeof decoded.id !== "string" || !mongoose.isValidObjectId(decoded.id)) {
+        return next(new ErrorResponse("Authentication required.", 401));
     }
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const user = await User.findById(decoded.id);
-        if (!user) {
-            return next(new ErrorResponse("Not user found with this id", 404));
+        const user = await User.findById(decoded.id).select("_id username email +tokenVersion");
+        if (!user || decoded.tokenVersion !== user.tokenVersion) {
+            return next(new ErrorResponse("Authentication required.", 401));
         }
         req.user = user;
-        next();
+        return next();
     } catch (error) {
-        return next(new ErrorResponse("Not authorized to access this route", 401));
+        console.error("Session verification failed:", error.name);
+        return next(new ErrorResponse("Unable to verify this session.", 500));
     }
 };
-

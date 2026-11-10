@@ -1,39 +1,68 @@
 # MERN Stack Authorization Example
 
-A focused full-stack authentication example with a responsive React client and an Express, MongoDB API. It demonstrates registration, login, protected profile access, logout, and password recovery flows.
+A full-stack authentication starter with a React client and an Express, MongoDB, and Mongoose API. It includes registration, sign-in, protected profile access, logout, and email-based password recovery.
 
 ## Features
 
-- Responsive authentication screens with a fixed branded header.
-- Token-based login and protected profile route.
-- Registration, forgot-password, and reset-password flows.
-- Icon-only social and support links in the footer.
-- React client and Express API kept in separate folders.
+- JWT sessions stored in HttpOnly cookies rather than browser storage.
+- Protected React routes backed by server-side session verification.
+- Password hashing with bcrypt and password reset tokens that expire after 15 minutes.
+- Password reset responses that do not disclose whether an email address has an account.
+- Origin checks on write requests, credentialed CORS, input validation, and safe API errors.
+- GitHub Pages compatible client routing with HashRouter.
 
-## Tech Stack
+## Stack
 
-React, React Router, Sass modules, Axios, React Icons, Node.js, Express, MongoDB, Mongoose, JWT, and Nodemailer.
+React 18, React Router 6, Axios, Sass, Node.js, Express, MongoDB, Mongoose, JWT, bcryptjs, and Nodemailer.
 
 ## Run locally
 
-```bash
-cd server
-npm install
-npm start
+Requirements: Node.js 22 or later and a MongoDB instance.
 
-cd ../client
-npm install
-npm start
-```
+1. Configure the API:
 
-The client expects the API at `http://localhost:1198`. Set `REACT_APP_API_URL` when the API runs elsewhere.
+    cd server
+    Copy-Item .env.example .env
+    npm install
+    npm start
+
+2. In another terminal, configure and start the client:
+
+    cd client
+    Copy-Item .env.example .env
+    npm install
+    npm start
+
+The client runs at http://localhost:3000 and the API at http://localhost:1198. Set the API URL in client/.env if the API uses a different address.
+
+## Configuration
+
+The API reads environment variables from server/.env. Set MONGODB_URI and replace JWT_SECRET with a randomly generated value of at least 32 bytes. Password recovery also needs a Gmail OAuth client and refresh token; fill in the OAuth fields in server/.env. Without email credentials, registration and sign-in work, but reset email delivery is unavailable.
+
+For a deployed client, set these API values:
+
+- NODE_ENV=production
+- CLIENT_ORIGIN to the exact browser origin, without a path (for this GitHub Pages client: https://a2rp.github.io)
+- CLIENT_URL to the full client base URL, including the repository path (https://a2rp.github.io/mern-stack-authorization-example)
+- COOKIE_SAME_SITE=none
+- REACT_APP_API_URL in the client build environment to the deployed API base URL
+
+Serve the API over HTTPS in production. Use a strong, unique JWT_SECRET and keep all server credentials private. The GitHub Pages client and a separately hosted API are cross-site; browsers that block third-party cookies can prevent sign-in from persisting. Hosting the client and API on the same site, or placing the API behind a same-origin proxy, provides the most reliable cookie behavior. CORS and the write-request origin check must include the actual client origin.
+
+## API routes
+
+- POST /api/auth/register
+- POST /api/auth/login
+- POST /api/auth/logout
+- POST /api/auth/forgotpassword
+- PUT /api/auth/resetpassword/:resetToken
+- GET /api/private
+
+JSON write requests must come from an origin listed in CLIENT_ORIGIN. Protected requests use the HttpOnly session cookie.
 
 ## Deploy the client
 
-```bash
-cd client
-npm run deploy
-```
+The client package includes a GitHub Pages deploy script. Set REACT_APP_API_URL in the build environment before deployment. Password reset links use hash routing so they load correctly from the project page.
 
 ## Screenshot
 
@@ -41,16 +70,10 @@ npm run deploy
 
 ## Links
 
-- Portfolio: [https://www.ashishranjan.net/](https://www.ashishranjan.net/)
-- GitHub: [https://github.com/a2rp](https://github.com/a2rp)
-- CodePen: [https://codepen.io/ash1198](https://codepen.io/ash1198)
-- LinkedIn: [https://www.linkedin.com/in/aashishranjan](https://www.linkedin.com/in/aashishranjan)
-- Facebook: [https://www.facebook.com/theash.ashish/](https://www.facebook.com/theash.ashish/)
-- YouTube: [https://www.youtube.com/@ashishranjan-ashz?sub_confirmation=1](https://www.youtube.com/@ashishranjan-ashz?sub_confirmation=1)
-- Email: [ash.ranjan09@gmail.com](mailto:ash.ranjan09@gmail.com)
-
-## Support
-
-- Support: [https://a2rp-donation-page.netlify.app/](https://a2rp-donation-page.netlify.app/)
-- Buy Me a Coffee: [https://buymeacoffee.com/a2rp](https://buymeacoffee.com/a2rp)
-- Patreon: [https://patreon.com/a2rp](https://patreon.com/a2rp)
+- Portfolio: https://www.ashishranjan.net/
+- GitHub: https://github.com/a2rp
+- CodePen: https://codepen.io/ash1198
+- LinkedIn: https://www.linkedin.com/in/aashishranjan
+- Facebook: https://www.facebook.com/theash.ashish/
+- YouTube: https://www.youtube.com/@ashishranjan-ashz?sub_confirmation=1
+- Email: ash.ranjan09@gmail.com

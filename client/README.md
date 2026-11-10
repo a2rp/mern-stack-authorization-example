@@ -1,28 +1,15 @@
 # MERN Stack Authorization Client
 
-Responsive React client for registration, login, protected profile access, logout, and password recovery. It connects to the Express API in the sibling `server` folder.
+React client for account registration, sign-in, protected profile access, logout, and password recovery. It uses React Router 6 and keeps the JWT session in an HttpOnly cookie managed by the sibling Express API.
 
-## Run
+## Run locally
 
-```bash
-npm install
-npm start
-```
+Requirements: Node.js 22 or later and the API running at http://localhost:1198.
 
-Set `REACT_APP_API_URL` if the API is not running at `http://localhost:1198`.
+    Copy-Item .env.example .env
+    npm install
+    npm start
 
-## Links
+Set REACT_APP_API_URL in .env when the API runs at a different base URL. The development client runs at http://localhost:3000.
 
-- Portfolio: [https://www.ashishranjan.net/](https://www.ashishranjan.net/)
-- GitHub: [https://github.com/a2rp](https://github.com/a2rp)
-- CodePen: [https://codepen.io/ash1198](https://codepen.io/ash1198)
-- LinkedIn: [https://www.linkedin.com/in/aashishranjan](https://www.linkedin.com/in/aashishranjan)
-- Facebook: [https://www.facebook.com/theash.ashish/](https://www.facebook.com/theash.ashish/)
-- YouTube: [https://www.youtube.com/@ashishranjan-ashz?sub_confirmation=1](https://www.youtube.com/@ashishranjan-ashz?sub_confirmation=1)
-- Email: [ash.ranjan09@gmail.com](mailto:ash.ranjan09@gmail.com)
-
-## Support
-
-- Support: [https://a2rp-donation-page.netlify.app/](https://a2rp-donation-page.netlify.app/)
-- Buy Me a Coffee: [https://buymeacoffee.com/a2rp](https://buymeacoffee.com/a2rp)
-- Patreon: [https://patreon.com/a2rp](https://patreon.com/a2rp)
+For GitHub Pages, configure REACT_APP_API_URL to the deployed API address before building. The app uses HashRouter so password reset links work on GitHub Pages project pages. See the repository README for API configuration and cross-site cookie notes.
